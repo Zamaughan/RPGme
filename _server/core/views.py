@@ -3,6 +3,7 @@ from django.conf  import settings
 import json
 import os
 from django.contrib.auth.decorators import login_required
+import json
 
 # Load manifest when server launches
 MANIFEST = {}

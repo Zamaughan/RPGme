@@ -1,10 +1,12 @@
-import { useState } from 'react'
-import reactLogo from './assets/react.svg'
-import viteLogo from '/vite.svg'
+import { useEffect, useState } from 'react'
 import './App.css'
+import DefaultLayout from './layouts/DefaultLayout';
+import VerticalRightLayout from './layouts/VerticalRightLayout';
 
 function App() {
-  const [count, setCount] = useState(0)
+  const [user, setUser] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
 
   async function logout() {
     const res = await fetch("/registration/logout/", {
@@ -19,30 +21,47 @@ function App() {
     }
   }
 
+  
+  useEffect(() => {
+    const fetchUser = async () => {
+      try {
+        const response = await fetch('/user/1', {
+          credentials: 'include',
+        });
+        if (!response.ok) {
+          throw new Error('Network response was not ok');
+        }
+        const data = await response.json();
+        setUser(data);
+      
+      } catch (error) {
+        setError(error);
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchUser();
+  }, []);
+
+  
+  
+
   return (
-    <>
-      <div>
-        <a href="https://vitejs.dev" target="_blank">
-          <img src={viteLogo} className="logo" alt="Vite logo" />
-        </a>
-        <a href="https://react.dev" target="_blank">
-          <img src={reactLogo} className="logo react" alt="React logo" />
-        </a>
-      </div>
-      <h1>Vite + React</h1>
-      <div className="card">
-        <button onClick={() => setCount((count) => count + 1)}>
-          count is {count}
+    <div className="flex flex-col h-screen bg-gray-900 text-white">
+
+      <header className="flex justify-between items-center p-4 bg-gray-800 border border-4 border-black/[0.1]">
+        <h1 className="text-xl font-bold">RPGME</h1>
+        <button className="bg-gray-700 hover:bg-gray-600 px-4 py-2 rounded">User</button>
+        <button className="bg-gray-700 hover:bg-gray-600 px-4 py-2 rounded">
+          Logout
         </button>
-        <p>
-          Edit <code>src/App.jsx</code> and save to test HMR
-        </p>
-      </div>
-      <p className="read-the-docs">
-        Click on the Vite and React logos to learn more
-      </p>
-      <button onClick={logout}>Logout</button>
-    </>
+      </header>
+
+      {/* Main content area */}
+      {/* <VerticalRightLayout /> */}
+      <DefaultLayout />
+    </div>
   )
 }
 
